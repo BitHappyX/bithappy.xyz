@@ -1,0 +1,405 @@
+{{ define "main" }}
+{{ .Scratch.Set "scope" "list" }}
+{{ if .Site.Params.taxonomy.showHero | default false }}
+{{ $heroStyle := print "hero/" .Site.Params.taxonomy.heroStyle ".html" }}
+{{ if templates.Exists ( printf "partials/%s" $heroStyle ) }}
+{{ partial $heroStyle . }}
+{{ else }}
+{{ partial "hero/basic.html" . }}
+{{ end }}
+{{- end -}}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } */
+
+        /* body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        } */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+
+        .calculators {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .calculator {
+            background: #c2c8dbad;
+            box-shadow: 0 4px 6px #f1b80d;
+            border-radius: 12px;
+            padding: 25px;
+            flex: 1;
+            min-width: 320px;
+            max-width: 380px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .calculator:hover {
+            /* transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15); */
+            box-shadow: 0 5px 15px #cafd5c;
+        }
+
+        .calculator h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .optional {
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+
+        .button-calc {
+            width: 100%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2980b9, #1c5980);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background: #c2c8dbad;
+            border: 1px solid #c2c8dbad;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 60px;
+        }
+
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .result-item {
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #27ae60;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .calculators {
+                flex-direction: column;
+            }
+
+            .calculator {
+                max-width: none;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="calculators">
+            <!-- APY转换为APR计算器 -->
+            <div class="calculator">
+                <h2>APY 转换为 APR</h2>
+                <div class="input-group">
+                    <label for="apy-input">APY (%)</label>
+                    <input type="number" id="apy-input" step="0.01" placeholder="请输入 APY 百分比">
+                </div>
+                <div class="input-group">
+                    <label for="apy-days">投入周期 <span class="optional">(天，可选)</span></label>
+                    <input type="number" id="apy-days" step="1" placeholder="请输入天数">
+                </div>
+                <button class="button-calc" onclick="calculateApyToApr()">计 算</button>
+                <div class="result" id="apy-result">
+                    <div>请输入 APY 进行计算！</div>
+                </div>
+            </div>
+
+            <!-- APR转换为APY计算器 -->
+            <div class="calculator">
+                <h2>APR 转换为 APY</h2>
+                <div class="input-group">
+                    <label for="apr-input">APR (%)</label>
+                    <input type="number" id="apr-input" step="0.01" placeholder="请输入 APR 百分比">
+                </div>
+                <div class="input-group">
+                    <label for="apr-days">投入周期 <span class="optional">(天，可选)</span></label>
+                    <input type="number" id="apr-days" step="1" placeholder="请输入天数">
+                </div>
+                <button class="button-calc" onclick="calculateAprToApy()">计 算</button>
+                <div class="result" id="apr-result">
+                    <div>请输入 APR 进行计算！</div>
+                </div>
+            </div>
+
+            <!-- 复利计算器 -->
+            <div class="calculator">
+                <h2>复利</h2>
+                <div class="input-group">
+                    <label for="principal">本金</label>
+                    <input type="number" id="principal" step="0.01" placeholder="请输入本金金额">
+                </div>
+                <div class="input-group">
+                    <label for="rate">利率 (每复利周期 %)</label>
+                    <input type="number" id="rate" step="0.01" placeholder="请输入利率百分比">
+                </div>
+                <div class="input-group">
+                    <label for="periods">复利次数</label>
+                    <input type="number" id="periods" step="1" placeholder="请输入复利次数">
+                </div>
+                <button class="button-calc" onclick="calculateCompoundInterest()">计 算</button>
+                <div class="result" id="compound-result">
+                    <div>请输入所有参数进行计算！</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // APY转换为APR计算器
+        function calculateApyToApr() {
+            const apyInput = document.getElementById('apy-input');
+            const daysInput = document.getElementById('apy-days');
+            const resultDiv = document.getElementById('apy-result');
+
+            // 清除之前的错误样式
+            apyInput.style.borderColor = '';
+
+            const apy = parseFloat(apyInput.value);
+            const days = parseFloat(daysInput.value);
+
+            if (isNaN(apy)) {
+                showError(resultDiv, '请输入有效的 APY 值', apyInput);
+                return;
+            }
+
+            try {
+                // APR计算: APR = ln(1 + APY/100) × 100
+                const apr = Math.log(1 + apy / 100) * 100;
+
+                let resultHTML = `
+                    <h3>计算结果：</h3>
+                    <div class="result-item">APR: <span class="result-value">${apr.toFixed(2)}%</span></div>
+                `;
+
+                // 如果提供了周期，计算期间回报率
+                if (!isNaN(days) && days > 0) {
+                    // 回报率 = [(1 + APY/100)^(d/365) - 1] × 100
+                    const periodReturn = (Math.pow(1 + apy / 100, days / 365) - 1) * 100;
+                    resultHTML += `<div class="result-item">${days}天回报率: <span class="result-value">${periodReturn.toFixed(2)}%</span></div>`;
+                }
+
+                resultDiv.innerHTML = resultHTML;
+            } catch (error) {
+                showError(resultDiv, '计算过程中出现错误，请检查输入值', apyInput);
+            }
+        }
+
+        // APR转换为APY计算器
+        function calculateAprToApy() {
+            const aprInput = document.getElementById('apr-input');
+            const daysInput = document.getElementById('apr-days');
+            const resultDiv = document.getElementById('apr-result');
+
+            // 清除之前的错误样式
+            aprInput.style.borderColor = '';
+
+            const apr = parseFloat(aprInput.value);
+            const days = parseFloat(daysInput.value);
+
+            if (isNaN(apr)) {
+                showError(resultDiv, '请输入有效的 APR 值', aprInput);
+                return;
+            }
+
+            try {
+                // APY计算: APY = (e^(APR/100) - 1) × 100
+                const apy = (Math.exp(apr / 100) - 1) * 100;
+
+                let resultHTML = `
+                    <h3>计算结果：</h3>
+                    <div class="result-item">APY: <span class="result-value">${apy.toFixed(2)}%</span></div>
+                `;
+
+                // 如果提供了周期，计算期间回报率
+                if (!isNaN(days) && days > 0) {
+                    // 回报率 = [e^(APR/100 × d/365) - 1] × 100
+                    const periodReturn = (Math.exp(apr / 100 * days / 365) - 1) * 100;
+                    resultHTML += `<div class="result-item">${days}天回报率: <span class="result-value">${periodReturn.toFixed(2)}%</span></div>`;
+                }
+
+                resultDiv.innerHTML = resultHTML;
+            } catch (error) {
+                showError(resultDiv, '计算过程中出现错误，请检查输入值', aprInput);
+            }
+        }
+
+        // 复利计算器
+        function calculateCompoundInterest() {
+            const principalInput = document.getElementById('principal');
+            const rateInput = document.getElementById('rate');
+            const periodsInput = document.getElementById('periods');
+            const resultDiv = document.getElementById('compound-result');
+
+            // 清除之前的错误样式
+            principalInput.style.borderColor = '';
+            rateInput.style.borderColor = '';
+            periodsInput.style.borderColor = '';
+
+            const principal = parseFloat(principalInput.value);
+            const rate = parseFloat(rateInput.value);
+            const periods = parseInt(periodsInput.value);
+
+            const errors = [];
+            const errorInputs = [];
+
+            if (isNaN(principal)) {
+                errors.push('本金');
+                errorInputs.push(principalInput);
+            }
+            if (isNaN(rate)) {
+                errors.push('利率');
+                errorInputs.push(rateInput);
+            }
+            if (isNaN(periods)) {
+                errors.push('复利次数');
+                errorInputs.push(periodsInput);
+            }
+
+            if (errors.length > 0) {
+                showError(resultDiv, `请输入有效的${errors.join('、')}`, errorInputs[0]);
+                errorInputs.forEach(input => input.style.borderColor = '#e74c3c');
+                return;
+            }
+
+            try {
+                // 最终本息 = 本金 × (1 + 利率/100)^复利次数
+                const finalAmount = principal * Math.pow(1 + rate / 100, periods);
+
+                // 回报率 = (最终本息/本金 - 1) × 100
+                const returnRate = (finalAmount / principal - 1) * 100;
+
+                const resultHTML = `
+                    <h3>计算结果：</h3>
+                    <div class="result-item">最终本息: <span class="result-value">${finalAmount.toFixed(2)}</span></div>
+                    <div class="result-item">回报率: <span class="result-value">${returnRate.toFixed(2)}%</span></div>
+                `;
+
+                resultDiv.innerHTML = resultHTML;
+            } catch (error) {
+                showError(resultDiv, '计算过程中出现错误，请检查输入值', principalInput);
+            }
+        }
+
+        // 错误处理函数
+        function showError(resultDiv, message, inputElement = null) {
+            resultDiv.innerHTML = `
+                <h3>计算结果：</h3>
+                <div class="error">${message}</div>
+            `;
+
+            if (inputElement) {
+                inputElement.style.borderColor = '#e74c3c';
+            }
+        }
+
+        // 输入框事件监听，清除错误状态
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function () {
+                this.style.borderColor = '';
+            });
+
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    // 根据输入框所在的计算器触发相应的计算函数
+                    if (this.id.includes('apy')) {
+                        calculateApyToApr();
+                    } else if (this.id.includes('apr')) {
+                        calculateAprToApy();
+                    } else {
+                        calculateCompoundInterest();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+{{ end }}

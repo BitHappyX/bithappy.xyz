@@ -1,0 +1,22 @@
+languageCode = "en"
+languageName = "English"
+weight = 2
+title = "BitHappy's Website"
+
+[params]
+  displayName = "English"
+  isoCode = "en"
+  rtl = false
+  dateFormat = "2 January 2006"
+  logo = "img/logo.png"
+  description = "Independent researcher | Divergent thinking, likes to talk about the market from the perspective of technology | From Coder to Holder"
+
+[author]
+  name = "BitHappy"
+  image = "img/author.png"
+  headline = "Independent researcher | Divergent thinking, likes to talk about the market from the perspective of technology | From Coder to Holder"
+  bio = "Independent researcher | Divergent thinking, likes to talk about the market from the perspective of technology | From Coder to Holder"
+  links = [
+    { x-twitter = "https://x.com/BitHappyX" },
+    { github = "https://github.com/BitHappyX" },
+  ]

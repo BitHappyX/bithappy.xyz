@@ -1,0 +1,33 @@
+- category: 常用推荐
+  links: 
+    - title: 哈皮
+      logo: logos/happy.png
+      url: https://bithappy.xyz/
+      description: 是我啊
+    - title: 币安
+      logo: logos/bn.jpg
+      url: https://www.binance.com/
+      description: 黄色交易所
+    - title: OKX
+      logo: logos/okx.jpg
+      url: https://www.okx.com/
+      description: 绿色交易所
+- category: 数据分析
+  links: 
+    - title: DeFiLlama
+      logo: logos/defillama.jpg
+      url: https://defillama.com/
+      description: 几乎能查阅一切链上的数据，Token Terminal 的补充
+    - title: Token Terminal
+      logo: logos/tokenterminal.jpg
+      url: https://tokenterminal.com/
+      description: 几乎能查阅一切链上的数据，DeFiLlama 的补充
+    - title: Dune
+      logo: logos/dune.jpg
+      url: https://dune.com/
+      description: 把区块链当作数据库去使用吧，很多大佬和项目的数据分析面板
+
+
+
+
+
