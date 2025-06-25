@@ -58,13 +58,10 @@
         }
 
         .calculator:hover {
-            /* transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15); */
             box-shadow: 0 5px 15px #cafd5c;
         }
 
         .calculator h2 {
-            color: #2c3e50;
             margin-bottom: 20px;
             font-size: 1.3em;
             text-align: center;
@@ -79,7 +76,7 @@
         .input-group label {
             display: block;
             margin-bottom: 5px;
-            color: #555;
+            color: #333;
             font-weight: 500;
             font-size: 0.9em;
         }
@@ -87,10 +84,11 @@
         .input-group input {
             width: 100%;
             padding: 10px 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid black;
             border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s ease;
+            background-color: transparent;
         }
 
         .input-group input:focus {
@@ -100,7 +98,7 @@
         }
 
         .optional {
-            color: #7f8c8d;
+            color: #666;
             font-size: 0.85em;
         }
 
@@ -117,12 +115,12 @@
             margin: 15px 0;
         }
 
-        button:hover {
+        .button-calc:hover {
             background: linear-gradient(135deg, #2980b9, #1c5980);
             transform: translateY(-1px);
         }
 
-        button:active {
+        .button-calc:active {
             transform: translateY(0);
         }
 
@@ -133,12 +131,8 @@
             padding: 15px;
             margin-top: 15px;
             min-height: 60px;
-        }
-
-        .result h3 {
-            color: #2c3e50;
             margin-bottom: 8px;
-            font-size: 1em;
+            font-size: 0.8em;
         }
 
         .result-item {
@@ -181,15 +175,15 @@
                 <h2>APY 转换为 APR</h2>
                 <div class="input-group">
                     <label for="apy-input">APY (%)</label>
-                    <input type="number" id="apy-input" step="0.01" placeholder="请输入 APY 百分比">
+                    <input type="text" id="apy-input" step="0.01" placeholder="请输入 APY">
                 </div>
                 <div class="input-group">
                     <label for="apy-days">投入周期 <span class="optional">(天，可选)</span></label>
-                    <input type="number" id="apy-days" step="1" placeholder="请输入天数">
+                    <input type="text" id="apy-days" step="1" placeholder="请输入天数">
                 </div>
                 <button class="button-calc" onclick="calculateApyToApr()">计 算</button>
                 <div class="result" id="apy-result">
-                    <div>请输入 APY 进行计算！</div>
+                    <div>请输入 APY，以获得结果！</div>
                 </div>
             </div>
 
@@ -198,15 +192,15 @@
                 <h2>APR 转换为 APY</h2>
                 <div class="input-group">
                     <label for="apr-input">APR (%)</label>
-                    <input type="number" id="apr-input" step="0.01" placeholder="请输入 APR 百分比">
+                    <input type="text" id="apr-input" step="0.01" placeholder="请输入 APR">
                 </div>
                 <div class="input-group">
                     <label for="apr-days">投入周期 <span class="optional">(天，可选)</span></label>
-                    <input type="number" id="apr-days" step="1" placeholder="请输入天数">
+                    <input type="text" id="apr-days" step="1" placeholder="请输入天数">
                 </div>
                 <button class="button-calc" onclick="calculateAprToApy()">计 算</button>
                 <div class="result" id="apr-result">
-                    <div>请输入 APR 进行计算！</div>
+                    <div>请输入 APR，以获得结果！</div>
                 </div>
             </div>
 
@@ -215,19 +209,21 @@
                 <h2>复利</h2>
                 <div class="input-group">
                     <label for="principal">本金</label>
-                    <input type="number" id="principal" step="0.01" placeholder="请输入本金金额">
+                    <div>
+                        <input type="text" id="principal" step="0.01" placeholder="请输入本金金额">
+                    </div>
                 </div>
                 <div class="input-group">
-                    <label for="rate">利率 (每复利周期 %)</label>
-                    <input type="number" id="rate" step="0.01" placeholder="请输入利率百分比">
+                    <label for="rate">利率<span class="optional">(每复利周期 %)</span></label>
+                    <input type="text" id="rate" step="0.01" placeholder="请输入利率">
                 </div>
                 <div class="input-group">
                     <label for="periods">复利次数</label>
-                    <input type="number" id="periods" step="1" placeholder="请输入复利次数">
+                    <input type="text" id="periods" step="1" placeholder="请输入复利次数">
                 </div>
                 <button class="button-calc" onclick="calculateCompoundInterest()">计 算</button>
                 <div class="result" id="compound-result">
-                    <div>请输入所有参数进行计算！</div>
+                    <div>请输入所有参数，以获得结果！</div>
                 </div>
             </div>
         </div>
