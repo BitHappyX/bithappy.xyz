@@ -1,6 +1,6 @@
 ---
-title: "Web3 宝库"
-description: "面向 Web3 的网站，这里包含 Web3 导航、教程、投研、思维方式等内容，希望对你在 Web3 的世界里有所帮助！"
+title: "快乐星球"
+description: "BitHappy：DeFi 爱好者，喜欢钻研投资和空投策略，乐于分享有价值的见解和经验！"
 ---
 {{< typeit
   tag=h2
