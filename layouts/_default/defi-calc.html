@@ -214,11 +214,11 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="rate">利率<span class="optional">(每复利周期 %)</span></label>
+                    <label for="rate">利率<span class="optional">（比如，每年 12%）</span></label>
                     <input type="text" id="rate" step="0.01" placeholder="请输入利率">
                 </div>
                 <div class="input-group">
-                    <label for="periods">复利次数</label>
+                    <label for="periods">复利次数（比如，复利 10 年）</label>
                     <input type="text" id="periods" step="1" placeholder="请输入复利次数">
                 </div>
                 <button class="button-calc" onclick="calculateCompoundInterest()">计 算</button>
@@ -248,19 +248,35 @@
             }
 
             try {
-                // APR计算: APR = ln(1 + APY/100) × 100
-                const apr = Math.log(1 + apy / 100) * 100;
+                // 假设日复利（一年365天）
+                const compoundingFrequency = 365;
+
+                // 正确的APR计算公式: APR = n × [(1 + APY/100)^(1/n) - 1] × 100
+                const apyDecimal = apy / 100;
+                const periodicRate = Math.pow(1 + apyDecimal, 1 / compoundingFrequency) - 1;
+                const apr = periodicRate * compoundingFrequency * 100;
+
 
                 let resultHTML = `
-                    <h3>计算结果：</h3>
-                    <div class="result-item">APR: <span class="result-value">${apr.toFixed(2)}%</span></div>
+                    <div class="result-item">APR：<span class="result-value">${apr.toFixed(2)}%</span></div>
                 `;
 
-                // 如果提供了周期，计算期间回报率
+                // 如果提供了周期，计算两种回报率
                 if (!isNaN(days) && days > 0) {
-                    // 回报率 = [(1 + APY/100)^(d/365) - 1] × 100
-                    const periodReturn = (Math.pow(1 + apy / 100, days / 365) - 1) * 100;
-                    resultHTML += `<div class="result-item">${days}天回报率: <span class="result-value">${periodReturn.toFixed(2)}%</span></div>`;
+                    const timeInYears = days / 365;
+
+                    // 方法1: 简单利息回报率（基于APR，不复利）
+                    // 公式: 简单回报率 = APR × (days/365)
+                    const simpleReturn = apr * timeInYears;
+
+                    // 方法2: 复利回报率（基于APR，考虑复利）
+                    // 公式: 复利回报率 = (1 + APR/(100×n))^(n×t) - 1
+                    const compoundReturn = (Math.pow(1 + periodicRate, compoundingFrequency * timeInYears) - 1) * 100;
+
+                    resultHTML += `
+                    <div class="result-item">${days} 天收益：<span class="result-value">${simpleReturn.toFixed(2)}%</span></div>
+                    <div class="result-item">复利 ${days} 天收益：<span class="result-value">${compoundReturn.toFixed(2)}%</span></div>
+                    `;
                 }
 
                 resultDiv.innerHTML = resultHTML;
@@ -280,26 +296,41 @@
 
             const apr = parseFloat(aprInput.value);
             const days = parseFloat(daysInput.value);
-
+            const compoundingFreq = 365;
             if (isNaN(apr)) {
                 showError(resultDiv, '请输入有效的 APR 值', aprInput);
                 return;
             }
 
             try {
-                // APY计算: APY = (e^(APR/100) - 1) × 100
-                const apy = (Math.exp(apr / 100) - 1) * 100;
+                // 假设日复利（一年365天）
+                const compoundingFrequency = 365;
+
+                // 正确的APY计算公式: APY = [(1 + APR/(100×n))^n - 1] × 100
+                const aprDecimal = apr / 100;
+                const periodicRate = aprDecimal / compoundingFrequency;
+                const apy = (Math.pow(1 + periodicRate, compoundingFrequency) - 1) * 100;
 
                 let resultHTML = `
-                    <h3>计算结果：</h3>
-                    <div class="result-item">APY: <span class="result-value">${apy.toFixed(2)}%</span></div>
+                    <div class="result-item">APY：<span class="result-value">${apy.toFixed(2)}%</span></div>
                 `;
 
-                // 如果提供了周期，计算期间回报率
+                // 如果提供了周期，计算两种回报率
                 if (!isNaN(days) && days > 0) {
-                    // 回报率 = [e^(APR/100 × d/365) - 1] × 100
-                    const periodReturn = (Math.exp(apr / 100 * days / 365) - 1) * 100;
-                    resultHTML += `<div class="result-item">${days}天回报率: <span class="result-value">${periodReturn.toFixed(2)}%</span></div>`;
+                    const timeInYears = days / 365;
+
+                    // 方法1: 简单利息回报率（基于APR，不复利）
+                    // 公式: 简单回报率 = APR × (days/365)
+                    const simpleReturn = apr * timeInYears;
+
+                    // 方法2: 复利回报率（基于APR，考虑复利）
+                    // 公式: 复利回报率 = (1 + APR/(100×n))^(n×t) - 1
+                    const compoundReturn = (Math.pow(1 + periodicRate, compoundingFrequency * timeInYears) - 1) * 100;
+
+                    resultHTML += `
+                    <div class="result-item">${days} 天收益：<span class="result-value">${simpleReturn.toFixed(2)}%</span></div>
+                    <div class="result-item">复利 ${days} 天收益：<span class="result-value">${compoundReturn.toFixed(2)}%</span></div>
+                    `;
                 }
 
                 resultDiv.innerHTML = resultHTML;
@@ -354,9 +385,8 @@
                 const returnRate = (finalAmount / principal - 1) * 100;
 
                 const resultHTML = `
-                    <h3>计算结果：</h3>
-                    <div class="result-item">最终本息: <span class="result-value">${finalAmount.toFixed(2)}</span></div>
-                    <div class="result-item">回报率: <span class="result-value">${returnRate.toFixed(2)}%</span></div>
+                    <div class="result-item">本息：<span class="result-value">${finalAmount.toFixed(2)}</span></div>
+                    <div class="result-item">回报率：<span class="result-value">${returnRate.toFixed(2)}%</span></div>
                 `;
 
                 resultDiv.innerHTML = resultHTML;
