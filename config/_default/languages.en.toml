@@ -11,7 +11,7 @@ title = "BitHappy's Website"
   logo = "img/logo.png"
   description = "Independent researcher | Divergent thinking, likes to talk about the market from the perspective of technology | From Coder to Holder"
 
-[author]
+[params.author]
   name = "BitHappy"
   image = "img/author.png"
   headline = "Independent researcher | Divergent thinking, likes to talk about the market from the perspective of technology | From Coder to Holder"

@@ -32,9 +32,9 @@ smartTOCHideUnfocusedChildren = false
   twitter = "BitHappyX"
 
 [footer]
-  showMenu = false
+  showMenu = true
   showCopyright = true
-  showThemeAttribution = false
+  showThemeAttribution = true
   showAppearanceSwitcher = true
   showScrollToTop = true
 

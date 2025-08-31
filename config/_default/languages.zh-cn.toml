@@ -11,8 +11,8 @@ title = "快乐星球"
   logo = "img/logo.png"
   description = "DeFi 爱好者，喜欢钻研投资和空投策略，乐于分享有价值的见解和经验！"
 
-[author]
-  name = "哈皮"
+[params.author]
+  name = "BitHappy"
   image = "img/author.png"
   headline = "DeFi 爱好者，喜欢钻研投资和空投策略，乐于分享有价值的见解和经验！"
   bio = "DeFi 爱好者，喜欢钻研投资和空投策略，乐于分享有价值的见解和经验！"
